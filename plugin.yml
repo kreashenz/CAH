@@ -1,0 +1,8 @@
+name: Cards Against Humanity
+main: com.gmail.xendroidzx.CAH
+version: 1.0
+description: Cards Against Humanity in Minecraft
+commands:
+  cah:
+    description: Base command for CardsAgainstHumanity
+    aliases: [cardsagainsthumanity]
