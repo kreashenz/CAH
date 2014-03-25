@@ -1,42 +1,61 @@
 package com.gmail.xendroidzx.cah;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.gmail.xendroidzx.cah.commands.CaHCommand;
+import com.gmail.xendroidzx.cah.commands.CAHCommand;
+import com.gmail.xendroidzx.cah.events.evt_PlayerDropItem;
+import com.gmail.xendroidzx.cah.events.evt_PlayerInteract;
 
 public class CAH extends JavaPlugin {
 
 	private static CAH clazz;
+	private CAHCommand cmd;
 
 	public String czar;
 
 	public List<String> players;
+	public List<WhiteCard> whites;
+	public List<BlackCard> blacks;
 
-	private List<WhiteCard> whites;
-	private List<BlackCard> blacks;
+	public HashMap<String, ItemStack[]> armor = new HashMap<String, ItemStack[]>();
+	public HashMap<String, ItemStack[]> inv = new HashMap<String, ItemStack[]>();
+	public HashMap<String, Location> pLoc = new HashMap<String, Location>();
 
 	public GameHandler gh;
+	public LocHandler loc;
 
+	@Override
 	public void onEnable() {
 		clazz = this;
-
-		gh = new GameHandler();
+		cmd = new CAHCommand();
+		loc = new LocHandler();
 
 		saveResource("white.txt", false);
 		saveResource("black.txt", false);
 		saveDefaultConfig();
 
 		load();
+		players = new ArrayList<String>();
 
-		getCommand("cah").setExecutor(new CaHCommand());
+		getCommand("cah").setExecutor(cmd);
+		getCommand("czar").setExecutor(cmd);
+
+		gh = new GameHandler();
+		
+		getServer().getPluginManager().registerEvents(new evt_PlayerDropItem(), this);
+		getServer().getPluginManager().registerEvents(new evt_PlayerInteract(), this);
 	}
 
 	public static CAH getInstance() {
@@ -49,21 +68,22 @@ public class CAH extends JavaPlugin {
 
 		File white = new File(getDataFolder(), "white.txt"), black = new File(getDataFolder(), "black.txt");
 
-		Scanner scanner;
+		BufferedReader reader;
+
 		String line;
 
 		try {
-			scanner = new Scanner(white);
-			while((line = scanner.nextLine()) != null) {
+			reader = new BufferedReader(new FileReader(white));
+			while((line = reader.readLine()) != null) {
 				whites.add(new WhiteCard(line));
 			}
-			scanner.close();
+			reader.close();
 
-			scanner = new Scanner(black);
-			while((line = scanner.nextLine()) != null) {
+			reader = new BufferedReader(new FileReader(black));
+			while((line = reader.readLine()) != null) {
 				blacks.add(new BlackCard(line));
 			}
-			scanner.close();
+			reader.close();
 		}
 		catch(Throwable t) {
 			t.printStackTrace();
