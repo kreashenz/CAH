@@ -17,7 +17,7 @@ public class evt_PlayerInteract implements Listener {
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
-		if(plugin.players.contains(p.getName())) {
+		if(plugin.players.contains(p.getName()) && !plugin.getCzar().equals(p)) {
 			ItemStack i = p.getItemInHand();
 			if(i != null && i.getType() == Material.WOOL && i.hasItemMeta()) {
 				if(e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -25,6 +25,7 @@ public class evt_PlayerInteract implements Listener {
 					plugin.gh.addCardToCzar(p);
 					if(plugin.gh.maxAnswers == plugin.gh.answers.get(p.getName())) {
 						plugin.gh.clearPlayer(p);
+						p.sendMessage("§6You submitted the max amount of cards");
 					}
 				}
 			}

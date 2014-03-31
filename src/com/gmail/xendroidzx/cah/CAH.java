@@ -9,12 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.gmail.xendroidzx.cah.commands.CAHCommand;
+import com.gmail.xendroidzx.cah.events.evt_BlockBreak;
+import com.gmail.xendroidzx.cah.events.evt_BlockPlace;
 import com.gmail.xendroidzx.cah.events.evt_PlayerDropItem;
 import com.gmail.xendroidzx.cah.events.evt_PlayerInteract;
 
@@ -31,7 +32,6 @@ public class CAH extends JavaPlugin {
 
 	public HashMap<String, ItemStack[]> armor = new HashMap<String, ItemStack[]>();
 	public HashMap<String, ItemStack[]> inv = new HashMap<String, ItemStack[]>();
-	public HashMap<String, Location> pLoc = new HashMap<String, Location>();
 
 	public GameHandler gh;
 	public LocHandler loc;
@@ -53,9 +53,11 @@ public class CAH extends JavaPlugin {
 		getCommand("czar").setExecutor(cmd);
 
 		gh = new GameHandler();
-		
+
 		getServer().getPluginManager().registerEvents(new evt_PlayerDropItem(), this);
 		getServer().getPluginManager().registerEvents(new evt_PlayerInteract(), this);
+		getServer().getPluginManager().registerEvents(new evt_BlockPlace(), this);
+		getServer().getPluginManager().registerEvents(new evt_BlockBreak(), this);
 	}
 
 	public static CAH getInstance() {

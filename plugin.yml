@@ -1,6 +1,6 @@
 name: CardsAgainstHumanity
 main: com.gmail.xendroidzx.cah.CAH
-version: 0.1.2
+version: 0.1.3
 description: Cards Against Humanity in Minecraft
 commands:
   cah:

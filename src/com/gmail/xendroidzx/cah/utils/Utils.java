@@ -21,4 +21,9 @@ public class Utils {
 		return i;
 	}
 
+	public static String replace(String string, char letter, Object... words) {
+		String result = String.format(string.replace(String.valueOf(letter), "%s"), words);
+		return result;
+	}
+
 }

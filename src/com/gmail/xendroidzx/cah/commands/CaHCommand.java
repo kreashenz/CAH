@@ -20,21 +20,21 @@ public class CAHCommand implements CommandExecutor {
 			if(cmd.getName().equalsIgnoreCase("cah")) {
 				if(args.length == 1) {
 					if(args[0].equalsIgnoreCase("help")) {
-						//if(p.hasPermission("cah.help")) {
+						if(p.hasPermission("cah.help")) {
 							sendHelp(p);
-						//} else noPerm(p);
+						} else noPerm(p);
 					}
 					else if(args[0].equalsIgnoreCase("join")) {
-						//if(p.hasPermission("cah.join")) {
+						if(p.hasPermission("cah.join")) {
 							savePlayerStuff(p);
 							plugin.gh.addPlayer(p);
-						//} else noPerm(p);
+						} else noPerm(p);
 					}
 					else if(args[0].equalsIgnoreCase("leave")) {
-						//if(p.hasPermission("cah.leave")) {
+						if(p.hasPermission("cah.leave")) {
 							loadPlayerStuff(p);
 							plugin.gh.removePlayer(p);
-						//} else noPerm(p);
+						} else noPerm(p);
 					}
 					else if(args[0].equalsIgnoreCase("players")) {
 						if(p.hasPermission("cah.players")) {
@@ -43,11 +43,12 @@ public class CAHCommand implements CommandExecutor {
 								if(sb.length() > 0) {
 									sb.append("§7, ");
 								}
-								sb.append("§6" + f);
+								sb.append("§9" + f);
 							}
 							p.sendMessage("§6Players playing: " + sb.toString() + " §7(§6" + plugin.players.size() + "§7/§c9§7)");
 						} else noPerm(p);
-					} else if(args[0].equalsIgnoreCase("set")) {
+					}
+					else if(args[0].equalsIgnoreCase("set")) {
 						if(p.hasPermission("cah.set")) {
 							if(p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR) {
 								plugin.loc.saveMapLocation(p.getLocation());
@@ -58,9 +59,9 @@ public class CAHCommand implements CommandExecutor {
 				} else sendHelp(p);
 			}
 			if(cmd.getName().equalsIgnoreCase("czar")) {
-				//if(p.hasPermission("cah.czar")) {
+				if(p.hasPermission("cah.czar")) {
 					p.sendMessage("§6The Czar is§7: §c" + (plugin.czar == null ? "no one" : plugin.czar));
-				//}
+				}
 			}
 		}
 		return true;
@@ -72,6 +73,7 @@ public class CAHCommand implements CommandExecutor {
 		p.sendMessage("§c/cah join §7- §9Join the CAH game");
 		p.sendMessage("§c/cah leave §7- §9Leave the CAH game");
 		p.sendMessage("§c/cah players §7- §9Show all players who are playing");
+		p.sendMessage("§6/cah set §7- §9Set the spawn area");
 		p.sendMessage("§c/czar §7- §9Show who the Czar is");
 	}
 
@@ -82,19 +84,19 @@ public class CAHCommand implements CommandExecutor {
 	private void savePlayerStuff(Player p) {
 		plugin.inv.put(p.getName(), p.getInventory().getContents());
 		plugin.armor.put(p.getName(), p.getInventory().getArmorContents());
-		plugin.pLoc.put(p.getName(), p.getLocation());
+		plugin.loc.savePlayerLocation(p, p.getLocation());
 
 		p.getInventory().clear();
 	}
 
 	private void loadPlayerStuff(Player p) {
-		p.teleport(plugin.pLoc.get(p.getName()));
+		p.teleport(plugin.loc.getPlayerLocation(p));
 		p.getInventory().setArmorContents(plugin.armor.get(p.getName()));
 		p.getInventory().setContents(plugin.inv.get(p.getName()));
 
 		plugin.inv.remove(p.getName());
 		plugin.armor.remove(p.getName());
-		plugin.pLoc.remove(p.getName());
+		plugin.loc.removePlayerLocation(p);
 	}
 
 }
